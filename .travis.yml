@@ -1,0 +1,24 @@
+language: python
+
+python:
+  - '2.7'
+  - '3.6'
+  - '3.7'
+  - '3.8'
+
+install: pip install flake8 isort tox-travis codecov
+
+script:
+  - flake8
+  - isort -c
+  - tox
+
+deploy:
+  provider: pypi
+  user: yurifari
+  password:
+    secure: BVYulTJx+1Q3PAQ7GCPspjLFsGlWcq64dnRcouLo0jj9gpTKc08xhsyE5QaSQJCm5rTRDiv5AhUFfIEcxd3JL6GqO9H13AFtKs80/ilIjoEjR2xvSlUxjbCwF24yeLL2lBLv/Jq+9gJ22XgPE1246OCWXiTgP8RGfLZop2H1gemnjpYK87cn0mNL07zTPGmD2cnxa05dqG6RuIkER5w58Oxy8bcKiiyIhR+mCoG9sqzki3c1J6PfSj3rmTLO07unVnlvaCuiXxg35EW9BVaFMxzNXHGSy9JKAygOpOIOB5zp/Uj2c24D05FDO8qg9P+LsLPN5o7qYF3LRuDMh8hmHkz60jkJzyvCmNnljOxKg7r4ULo9B3ozZWZLEEFXXvYOEDuWw3j1j9qQPGORSOF0k6D5FwqfKisX6Go6ABPmx58eG7U4n7NUuGx5e//nd1aSwcoANgf873f9EXu5MW0PPVsP78uTEYj2UDabraQRC/D+hgiI4y0JskeN2Rbx0OXLlI8rDUy/dUPgB8uxhKfEw39Q49h81jsLeEDCoABURgyN9qq/RH5N0WJ9c+ixe+iQZySUmtxLQDivHFCDMqGKjYuFjZ0eLzmIm5/RQ5F36hcqxAcNDYyiUfH4D210pqZbevJ3bWDT29psqQbhS/hVuHGfUEq82tuiVIWmxt9/+Tg=
+  on:
+    tags: true
+
+after_success: codecov

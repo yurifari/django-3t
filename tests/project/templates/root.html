@@ -1,0 +1,11 @@
+{% block header %}<h1>Top level template</h1>{% endblock %}
+
+<hr>
+
+{% block fragments %}
+    <h2>Fragments list</h2>
+
+    {% include 'fragment.html' with parent='root' %}
+    {% include 'fragment.html' with parent='root' orientation="landscape" %}
+    {% include 'fragment.html' with parent='root' orientation="portrait" %}
+{% endblock %}
