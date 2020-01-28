@@ -2,11 +2,11 @@ from contextlib import contextmanager
 
 from django.template.base import Node, Template
 
-from .rendering import Rendering
-from .signals import node_rendered, template_rendered
+from d3t.results import RenderedResult
+from d3t.signals import node_rendered, template_rendered
 
 __all__ = [
-    'watch_templates',
+    'watch',
 ]
 
 
@@ -27,7 +27,7 @@ def wrap_node_render(render_function):
 
 
 @contextmanager
-def mock_template_render():
+def patch_template_render():
     original_function = Template._render
     Template._render = wrap_template_render(Template._render)
 
@@ -37,7 +37,7 @@ def mock_template_render():
 
 
 @contextmanager
-def mock_node_render():
+def patch_node_render():
     original_function = Node.render_annotated
     Node.render_annotated = wrap_node_render(Node.render_annotated)
 
@@ -47,14 +47,14 @@ def mock_node_render():
 
 
 @contextmanager
-def watch_templates():
-    rendering = Rendering()
+def watch():
+    rendered = RenderedResult()
 
-    template_rendered.connect(rendering.register_template)
-    node_rendered.connect(rendering.register_node)
+    template_rendered.connect(rendered.register_template)
+    node_rendered.connect(rendered.register_node)
 
-    with mock_template_render(), mock_node_render():
-        yield rendering
+    with patch_template_render(), patch_node_render():
+        yield rendered
 
-    template_rendered.disconnect(rendering.register_template)
-    node_rendered.disconnect(rendering.register_node)
+    template_rendered.disconnect(rendered.register_template)
+    node_rendered.disconnect(rendered.register_node)

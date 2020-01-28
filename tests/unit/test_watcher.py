@@ -1,14 +1,14 @@
 from django.template import Context, Template
 
 from d3t.signals import node_rendered, template_rendered
-from d3t.watcher import watch_templates
+from d3t.watcher import watch
 
 
 def test_signals_connection(mocker):
-    register_template = mocker.patch('d3t.watcher.Rendering.register_template')
-    register_node = mocker.patch('d3t.watcher.Rendering.register_node')
+    register_template = mocker.patch('d3t.watcher.RenderedResult.register_template')
+    register_node = mocker.patch('d3t.watcher.RenderedResult.register_node')
 
-    with watch_templates():
+    with watch():
         template_rendered.send(None)
         node_rendered.send(None)
 
@@ -17,10 +17,10 @@ def test_signals_connection(mocker):
 
 
 def test_signals_disconnection(mocker):
-    register_template = mocker.patch('d3t.watcher.Rendering.register_template')
-    register_node = mocker.patch('d3t.watcher.Rendering.register_node')
+    register_template = mocker.patch('d3t.watcher.RenderedResult.register_template')
+    register_node = mocker.patch('d3t.watcher.RenderedResult.register_node')
 
-    with watch_templates():
+    with watch():
         pass
 
     template_rendered.send(None)
@@ -42,7 +42,7 @@ def test_signal_sending(mocker):
         '{% echo %}'
     )
 
-    with watch_templates():
+    with watch():
         template.render(Context())
 
     assert on_template_rendered.called

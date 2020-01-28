@@ -39,16 +39,16 @@ Installation
 
 Usage
 *****
-Django 3T uses the ``watch_templates`` context manager to intercept template and node renderings.
+Django 3T uses the ``watch`` context manager to intercept template and node renderings.
 
 Suppose your project implements the following template called ``homepage.html``:
 
 .. code-block:: html
 
     {% load say_hello from project_tags %}
-    
+
     <h1>The most useful website ever</h1>
-    
+
     {% say_hello request.user %}
 
 A test that makes sure your template and template tag are rendered correctly would roughly look like this:
@@ -57,21 +57,21 @@ A test that makes sure your template and template tag are rendered correctly wou
 
     from django.contrib.auth import get_user_model
     from django.test import Client
-    
+
     # 1. Import the context manager
-    from d3t.watcher import watch_templates
-    
+    from d3t.watcher import watch
+
     User = get_user_model()
-    
+
     def test_homepage():
         user = User.objects.get(username='Billy')
         client = Client()
         client.force_login(user)
-        
+
         # 2. Wrap the code where the rendering happens
-        with watch_templates as rendered:
+        with watch as rendered:
             client.get('/')
-    
+
         # 3. Assert!
         assert rendered.template('homepage.html')
         assert rendered.node('say_hello').with_arguments(user)

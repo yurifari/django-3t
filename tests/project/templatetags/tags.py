@@ -11,3 +11,8 @@ def echo(message=''):
 @register.simple_tag
 def free(*args, **kwargs):
     pass
+
+
+@register.simple_tag
+def hello(user):
+    return 'Hello, {}!'.format(user.name)

@@ -1,7 +1,7 @@
 from django.template import Context, Template
 from django.template.loader import render_to_string
 
-from d3t.watcher import watch_templates
+import d3t
 
 
 def test_rendered():
@@ -10,7 +10,7 @@ def test_rendered():
         '{% echo %}'
     )
 
-    with watch_templates() as rendered:
+    with d3t.watch() as rendered:
         template.render(Context())
 
     assert rendered.node('echo')
@@ -23,7 +23,7 @@ def test_contains():
         '{% echo "Message from the upside down" %}'
     )
 
-    with watch_templates() as rendered:
+    with d3t.watch() as rendered:
         template.render(Context())
 
     assert rendered.node('echo').contains('Message')
@@ -36,7 +36,7 @@ def test_equals():
         '{% echo "Message from the upside down" %}'
     )
 
-    with watch_templates() as rendered:
+    with d3t.watch() as rendered:
         template.render(Context())
 
     assert rendered.node('echo').equals('Message from the upside down')
@@ -49,7 +49,7 @@ def test_with_arguments():
         '{% free 42 type="answer" %}'
     )
 
-    with watch_templates() as rendered:
+    with d3t.watch() as rendered:
         template.render(Context())
 
     assert rendered.node('free').with_arguments(42, type='answer')
@@ -58,7 +58,7 @@ def test_with_arguments():
 
 
 def test_within():
-    with watch_templates() as rendered:
+    with d3t.watch() as rendered:
         render_to_string('root.html')
 
     assert rendered.node('echo').within('fragment.html')
@@ -73,7 +73,7 @@ def test_any():
         '{% free orientation="portrait" %}'
     )
 
-    with watch_templates() as rendered:
+    with d3t.watch() as rendered:
         template.render(Context())
 
     assert any(rendered.node('free').with_arguments(orientation='portrait'))
@@ -88,7 +88,7 @@ def test_all():
         '{% free 42 orientation="portrait" %}'
     )
 
-    with watch_templates() as rendered:
+    with d3t.watch() as rendered:
         template.render(Context())
 
     assert any(rendered.node('free').with_arguments(42))
@@ -103,7 +103,7 @@ def test_len():
         '{% free 42 orientation="portrait" %}'
     )
 
-    with watch_templates() as rendered:
+    with d3t.watch() as rendered:
         template.render(Context())
 
     assert len(rendered.node('free')) == 3

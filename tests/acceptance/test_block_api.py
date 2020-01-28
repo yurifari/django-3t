@@ -1,10 +1,10 @@
 from django.template.loader import render_to_string
 
-from d3t.watcher import watch_templates
+import d3t
 
 
 def test_rendered():
-    with watch_templates() as rendered:
+    with d3t.watch() as rendered:
         render_to_string('root.html')
 
     assert rendered.block('header')
@@ -12,7 +12,7 @@ def test_rendered():
 
 
 def test_contains():
-    with watch_templates() as rendered:
+    with d3t.watch() as rendered:
         render_to_string('root.html')
 
     assert rendered.block('fragments').contains('Fragments list')
@@ -20,7 +20,7 @@ def test_contains():
 
 
 def test_equals():
-    with watch_templates() as rendered:
+    with d3t.watch() as rendered:
         render_to_string('root.html')
 
     assert rendered.block('header').equals('<h1>Top level template</h1>')
