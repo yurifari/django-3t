@@ -1,3 +1,6 @@
+Django 3T
+#########
+
 .. image:: https://img.shields.io/pypi/v/django-3t
     :alt: PyPI Version
     :target: https://pypi.python.org/pypi/pytest-3t
@@ -14,8 +17,6 @@
     :alt: License
     :target: https://github.com/yurifari/django-3t
 
-Django 3T
-#########
 
 Django 3T is a Django Template Testing Tool which aims to help developers to write better tests where the Django template engine is involved.
 
@@ -59,7 +60,7 @@ A test that makes sure your template and template tag are rendered correctly wou
     from django.test import Client
 
     # 1. Import the context manager
-    from d3t.watcher import watch
+    import d3t
 
     User = get_user_model()
 
@@ -69,7 +70,7 @@ A test that makes sure your template and template tag are rendered correctly wou
         client.force_login(user)
 
         # 2. Wrap the code where the rendering happens
-        with watch as rendered:
+        with d3t.watch() as rendered:
             client.get('/')
 
         # 3. Assert!
