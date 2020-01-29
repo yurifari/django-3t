@@ -208,17 +208,15 @@ This is sent immediately after a template is rendered.
 
 Arguments sent with this signal:
 
-- | **sender**
-  | The ``Template`` class.
-
-- | **instance**
-  | The actual template instance being rendered.
-
-- | **context**
-  | The context used to render the template.
-
-- | **result**
-  | The resulting rendered output.
++--------------+----------------------------------------------+
+| **sender**   | The ``Template`` class.                      |
++--------------+----------------------------------------------+
+| **instance** | The actual template instance being rendered. |
++--------------+----------------------------------------------+
+| **context**  | The context used to render the template.     |
++--------------+----------------------------------------------+
+| **result**   | The resulting rendered output.               |
++--------------+----------------------------------------------+
 
 node_rendered
 =================
@@ -228,11 +226,10 @@ This is sent immediately after a node is rendered.
 
 Arguments sent with this signal:
 
-- | **sender**
-  | The ``Node`` class.
-
-- | **instance**
-  | The actual node instance being rendered.
-
-- | **result**
-  | The resulting rendered output.
++--------------+------------------------------------------+
+| **sender**   | The ``Node`` class.                      |
++--------------+------------------------------------------+
+| **instance** | The actual node instance being rendered. |
++--------------+------------------------------------------+
+| **result**   | The resulting rendered output.           |
++--------------+------------------------------------------+
