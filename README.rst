@@ -17,8 +17,8 @@ Django 3T
     :alt: License
     :target: https://github.com/yurifari/django-3t
 
-
-Django 3T is a Django Template Testing Tool which aims to help developers to write better tests where the Django template engine is involved.
+| 
+| Django 3T is a Django Template Testing Tool which aims to help developers to write better tests where the Django template engine is involved.
 
 Some of the things you can do with Django 3T include:
 
