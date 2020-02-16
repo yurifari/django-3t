@@ -33,6 +33,7 @@ def template(make_item):
     item = make_item('template')
     item.name = 'root.html'
     item.context = {'number': 42, 'type': 'answer'}
+    item.parent_name = 'parent.html'
     return item
 
 
@@ -93,6 +94,11 @@ def test_template_with_context(template):
     assert TemplateSelection([template]).with_context({'number': 42})
     assert not TemplateSelection([template]).with_context({'number': 24})
     assert not TemplateSelection([template]).with_context({'letter': 'O'})
+
+
+def test_template_extends(template):
+    assert TemplateSelection([template]).extends('parent.html')
+    assert not TemplateSelection([template]).extends('root.html')
 
 
 def test_node_within(node):

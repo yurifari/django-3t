@@ -1,3 +1,5 @@
+from django.template.loader_tags import ExtendsNode
+
 from d3t.selections import NodeSelection, TemplateSelection
 
 __all__ = [
@@ -8,10 +10,11 @@ __all__ = [
 
 
 class RenderedTemplate(object):
-    def __init__(self, obj, context, nodes, result):
+    def __init__(self, obj, context, nodes, parent_name, result):
         self.obj = obj
         self.context = context
         self.nodes = nodes
+        self.parent_name = parent_name
         self.result = result
 
         for node in self.nodes:
@@ -29,6 +32,7 @@ class RenderedTemplate(object):
             self.obj == other.obj,
             self.context == other.context,
             self.nodes == other.nodes,
+            self.parent_name == other.parent_name,
         ])
 
 
@@ -74,8 +78,17 @@ class RenderedResult(object):
         self.nodes = []
         self.templates = []
 
+    def _get_extended_template_name(self, nodelist, context):
+        try:
+            extends_node = nodelist.get_nodes_by_type(ExtendsNode)[0]
+        except IndexError:
+            return None
+
+        return extends_node.parent_name.resolve(context)
+
     def register_template(self, sender, signal, template, context, result, **kwargs):
-        template = RenderedTemplate(template, context.dicts[-1], self.nodes[:], result)
+        parent_name = self._get_extended_template_name(template.nodelist, context)
+        template = RenderedTemplate(template, context.dicts[-1], self.nodes[:], parent_name, result)
         self.templates.append(template)
         self.nodes = []
 

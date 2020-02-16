@@ -22,6 +22,9 @@ class TemplateSelection(Selection):
     def with_context(self, context):
         return self.filter(lambda item: all(i in item.context.items() for i in context.items()))
 
+    def extends(self, template_name):
+        return self.filter(lambda item: item.parent_name == template_name)
+
 
 class NodeSelection(Selection):
     def within(self, template_name):

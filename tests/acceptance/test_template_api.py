@@ -37,6 +37,14 @@ def test_with_context():
     assert not rendered.template('fragment.html').with_context({'string': '42'})
 
 
+def test_extends():
+    with d3t.watch() as rendered:
+        render_to_string('welcome.html')
+
+    assert rendered.template('welcome.html').extends('root.html')
+    assert not rendered.template('welcome.html').extends('unknown.html')
+
+
 def test_any():
     with d3t.watch() as rendered:
         render_to_string('root.html')

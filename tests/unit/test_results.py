@@ -1,5 +1,7 @@
 import pytest
-from django.template import Context
+from django.template.base import NodeList, Variable
+from django.template.context import Context
+from django.template.loader_tags import ExtendsNode
 
 from d3t.results import RenderedNode, RenderedResult, RenderedTemplate
 
@@ -50,7 +52,7 @@ def make_rendered(mocker):
 
 def test_template_links_nodes_to_itself(mocker):
     node = mocker.Mock()
-    template = RenderedTemplate(None, None, [node], None)
+    template = RenderedTemplate(None, None, [node], None, None)
 
     assert node.set_template.called_with(template)
 
@@ -58,13 +60,13 @@ def test_template_links_nodes_to_itself(mocker):
 def test_template_name(mocker):
     obj = mocker.Mock()
     obj.name = 'root.html'
-    template = RenderedTemplate(obj, None, [], None)
+    template = RenderedTemplate(obj, None, [], None, None)
 
     assert template.name == 'root.html'
 
 
 def test_template_to_string():
-    template = RenderedTemplate(None, None, [], 'terrific')
+    template = RenderedTemplate(None, None, [], None, 'terrific')
 
     assert str(template) == 'terrific'
 
@@ -74,13 +76,15 @@ def test_template_equals(mocker):
     context = mocker.Mock()
     node1 = mocker.Mock()
     node2 = mocker.Mock()
-    template = RenderedTemplate(obj, context, [node1, node2], None)
+    parent_name = mocker.Mock()
+    template = RenderedTemplate(obj, context, [node1, node2], parent_name, None)
 
-    assert template == RenderedTemplate(obj, context, [node1, node2], None)
-    assert template != RenderedTemplate(obj, context, [node2, node1], None)
-    assert template != RenderedTemplate(obj, context, [node1], None)
-    assert template != RenderedTemplate(mocker.Mock(), context, [node1, node2], None)
-    assert template != RenderedTemplate(obj, mocker.Mock(), [node1, node2], None)
+    assert template == RenderedTemplate(obj, context, [node1, node2], parent_name, None)
+    assert template != RenderedTemplate(obj, context, [node2, node1], parent_name, None)
+    assert template != RenderedTemplate(obj, context, [node1], parent_name, None)
+    assert template != RenderedTemplate(mocker.Mock(), context, [node1, node2], parent_name, None)
+    assert template != RenderedTemplate(obj, mocker.Mock(), [node1, node2], parent_name, None)
+    assert template != RenderedTemplate(obj, context, [node1, node2], mocker.Mock(), None)
 
 
 def test_node_name(mocker):
@@ -108,7 +112,7 @@ def test_node_arguments(mocker):
     node.template = template
 
     assert node.arguments == ((42, ), {'type': 'answer'})
-    node.obj.get_resolved_arguments.assert_called_with(node.template.context)
+    assert node.obj.get_resolved_arguments.called_with(node.template.context)
 
 
 def test_node_arguments_unavailable(mocker):
@@ -144,6 +148,27 @@ def test_node_set_template(mocker):
     assert node.template == template
 
 
+def test_result_parent_name_from_base_template(mocker):
+    nodelist = NodeList()
+    context = {}
+    rendered = RenderedResult()
+
+    parent_name = rendered._get_extended_template_name(nodelist, context)
+
+    assert parent_name is None
+
+
+def test_result_parent_name_from_child_template(mocker):
+    extends_node = ExtendsNode(NodeList(), Variable('extended-template'))
+    nodelist = NodeList([extends_node])
+    context = {'extended-template': 'parent-name'}
+    rendered = RenderedResult()
+
+    parent_name = rendered._get_extended_template_name(nodelist, context)
+
+    assert parent_name == 'parent-name'
+
+
 def test_result_template_registration(mocker):
     context = {'key': 'value'}
     request_context = Context({})
@@ -153,10 +178,12 @@ def test_result_template_registration(mocker):
     result = mocker.Mock()
     rendered = RenderedResult()
     rendered.nodes = nodes
+    rendered._get_extended_template_name = mocker.Mock(return_value='parent-name')
 
     rendered.register_template(mocker.ANY, mocker.ANY, template, request_context, result)
 
-    assert rendered.templates == [RenderedTemplate(template, context, nodes, result)]
+    assert rendered._get_extended_template_name.called_with(template.nodelist, context)
+    assert rendered.templates == [RenderedTemplate(template, context, nodes, 'parent-name', result)]
 
 
 def test_result_node_registration(mocker):
