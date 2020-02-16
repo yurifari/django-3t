@@ -25,6 +25,7 @@ Some of the things you can do with Django 3T include:
 - Ensure a specific ``template``, ``node`` or ``block`` is rendered
 - Ensure a specific ``template``, ``node`` or ``block`` is rendered a specific amount of times
 - Ensure a specific ``template`` is rendered with a specific context subset
+- Ensure a specific ``template`` is rendered extending a specific template
 - Ensure a specific ``node`` is rendered with specific arguments
 - Ensure a specific ``template``, ``node`` or ``block`` results in a specific content or includes it
 
@@ -102,6 +103,12 @@ Check that it has been rendered with a specific context subset
 .. code-block:: python
 
     rendered.template('template-name.html').with_context({'answer': 42})
+
+Check that it has been rendered extending a specific template
+
+.. code-block:: python
+
+    rendered.template('template-name.html').extends('parent-name.html')
 
 Check that it has been rendered and the output contains a specific string
 
