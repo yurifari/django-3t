@@ -2,10 +2,12 @@
 
 <hr>
 
-{% block fragments %}
-    <h2>Fragments list</h2>
+{% block body %}
+    {% block fragments %}
+        <h2>Fragments list</h2>
 
-    {% include 'fragment.html' with parent='root' %}
-    {% include 'fragment.html' with parent='root' orientation="landscape" %}
-    {% include 'fragment.html' with parent='root' orientation="portrait" %}
+        {% include 'fragment.html' with parent='root' %}
+        {% include 'fragment.html' with parent='root' orientation="landscape" %}
+        {% include 'fragment.html' with parent='root' orientation="portrait" %}
+    {% endblock %}
 {% endblock %}
