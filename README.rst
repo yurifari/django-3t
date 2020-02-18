@@ -42,8 +42,6 @@ Contents
     * `Block API <block-api_>`_
     * `Handling multiple renderings <handling-multiple-renderings_>`_
 * `Signals <signals_>`_
-    * `template_rendered <template-rendered_>`_
-    * `node_rendered <node-rendered_>`_
 
 .. _installation:
 
@@ -224,8 +222,6 @@ Check that any of the template/node/block renderings happened under a specific c
 Signals
 *******
 
-.. _template-rendered:
-
 template_rendered
 =================
 
@@ -244,8 +240,6 @@ Arguments sent with this signal:
 +--------------+----------------------------------------------+
 | **result**   | The resulting rendered output.               |
 +--------------+----------------------------------------------+
-
-.. _node-rendered:
 
 node_rendered
 =================
