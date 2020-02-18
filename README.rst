@@ -36,11 +36,13 @@ Contents
 
 * `Installation <installation_>`_
 * `Usage <usage_>`_
-* `API <api_>`_
-    * `Template API <template-api_>`_
-    * `Node API <node-api_>`_
-    * `Block API <block-api_>`_
+    * `Quickstart <quickstart_>`_
+    * `RenderedResult API <renderedresult-api_>`_
+        * `Template <template_>`_
+        * `Node <node_>`_
+        * `Block <block_>`_
     * `Handling multiple renderings <handling-multiple-renderings_>`_
+    * `Rendering a specific template <rendering-a-specific-template_>`_
 * `Signals <signals_>`_
 
 .. _installation:
@@ -55,7 +57,14 @@ Installation
 
 Usage
 *****
+
+.. _quickstart:
+
+Quickstart
+==========
+
 Django 3T uses the ``watch`` context manager to intercept template and node renderings.
+This context manager provides a ``RenderedResult`` object that can be used to inspect that has been collected.
 
 Suppose your project implements the following template called ``homepage.html``:
 
@@ -94,18 +103,18 @@ A test that makes sure your template and template tag are rendered correctly wou
 
 The first assertion makes sure the template ``homepage.html`` was rendered, the second assertion makes sure the template tag ``say_hello`` was rendered and it was done using ``user`` as argument.
 
-For a comprehensive list of available methods, check the `API section <api_>`_.
+For a comprehensive list of available methods, check the `RenderedResult API <renderedresult-api_>`_.
 
-.. _api:
+.. _renderedresult-api:
 
-API
-***
+RenderedResult API
+==================
 You can check that a template, node or block has been rendered and that it did under specific conditions
 
-.. _template-api:
+.. _template:
 
-Template API
-=================
+Template
+--------
 Check that it has been rendered
 
 .. code-block:: python
@@ -136,10 +145,10 @@ Check that it has been rendered and the output equals a specific string
 
     rendered.template('template-name.html').equals('full content')
 
-.. _node-api:
+.. _node:
 
-Node API
-=================
+Node
+----
 Check that it has been rendered
 
 .. code-block:: python
@@ -164,10 +173,10 @@ Check that it has been rendered and the output equals a specific string
 
     rendered.node('node_name').equals('full content')
 
-.. _block-api:
+.. _block:
 
-Block API
-=================
+Block
+-----
 Check that it has been rendered
 
 .. code-block:: python
@@ -216,6 +225,54 @@ Check that any of the template/node/block renderings happened under a specific c
 .. code-block:: python
 
     any(rendered.template('template-name.html').equals('specific content'))
+
+.. _rendering-a-specific-template:
+
+Rendering a specific template
+=============================
+
+Django 3T comes with a convenient function, called ``render``, that, given a template name and a context dictionary, renders the template and intercepts template and node renderings. Behind the hood, ``render`` uses the ``watch`` context manager, and returns a ``RenderedResult`` object.
+
+One of the advantages of the ``render`` function is that it renders only the given template, if the given template extends another one, the latter will be ignored. This allows you to focus on what you really need to test and doesn't force you to populate the context with data you are not interested into.
+
+``parent.html``
+
+.. code-block:: html
+
+    {% block body %}
+        Hi, here is the parent template!
+    {% endblock %}
+    
+    {% block footer %}
+        See ya {{ when|date }}!
+        
+        {% comment %}
+            You don't need to pass `when` in the context
+            because this block won't be rendered!
+        {% endcomment %}
+    {% endblock %}
+
+``child.html``
+
+.. code-block:: html
+
+    {% extends 'parent.html' %}
+    
+    {% block body %}
+        Hi, {{ username }}!
+    {% endblock %}
+
+``tests.py``
+
+.. code-block:: python
+
+    import d3t
+
+    def test_homepage():
+        rendered = d3t.render('child.html', {'username': 'Arthur'})
+        
+        assert rendered.block('body')
+        assert rendered.block('footer')  # This will fail!
 
 .. _signals:
 
