@@ -35,14 +35,23 @@ Contents
 ********
 
 * `Installation <installation_>`_
+
 * `Usage <usage_>`_
+
     * `Quickstart <quickstart_>`_
+    
     * `RenderedResult API <renderedresult-api_>`_
+    
         * `Template <template_>`_
+        
         * `Node <node_>`_
+        
         * `Block <block_>`_
+        
     * `Handling multiple renderings <handling-multiple-renderings_>`_
+    
     * `Rendering a specific template <rendering-a-specific-template_>`_
+    
 * `Signals <signals_>`_
 
 .. _installation:
