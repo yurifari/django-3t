@@ -29,6 +29,22 @@ Some of the things you can do with Django 3T include:
 - Ensure a specific ``node`` is rendered with specific arguments
 - Ensure a specific ``template``, ``node`` or ``block`` results in a specific content or includes it
 
+.. _contents:
+
+Contents
+********
+
+* `Installation <installation_>`_
+* `Usage <usage_>`_
+* `API <api_>`_
+    * `Template API <template-api_>`_
+    * `Node API <node-api_>`_
+    * `Block API <block-api_>`_
+    * `Handling multiple renderings <handling-multiple-renderings_>`_
+* `Signals <signals_>`_
+    * `template_rendered <template-rendered_>`_
+    * `node_rendered <node-rendered_>`_
+
 .. _installation:
 
 Installation
@@ -174,7 +190,7 @@ Check that it has been rendered and the output equals a specific string
 
 .. _handling-multiple-renderings:
 
-Handling multilpe renderings
+Handling multiple renderings
 ============================
 
 A template, node or block could be rendered any number of times, Django 3T allows you to take control of this giving support for the ``not`` operator and for the ``len``, ``all`` and ``any`` built-in functions:
@@ -207,8 +223,12 @@ Check that any of the template/node/block renderings happened under a specific c
 
 Signals
 *******
+
+.. _template-rendered:
+
 template_rendered
 =================
+
 ``d3t.signals.template_rendered``
 
 This is sent immediately after a template is rendered.
@@ -224,6 +244,8 @@ Arguments sent with this signal:
 +--------------+----------------------------------------------+
 | **result**   | The resulting rendered output.               |
 +--------------+----------------------------------------------+
+
+.. _node-rendered:
 
 node_rendered
 =================
